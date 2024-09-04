@@ -1,7 +1,9 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Inter, Open_Sans, Poppins } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
+const openSans = Open_Sans({ subsets: ['latin'] })
+const poppins = Poppins({ weight: ['400', '700'], subsets: ['latin'] })
 
 export const metadata = {
   title: 'Astrofinance',
@@ -15,10 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} ${openSans.className} ${poppins.className}`}>{children}</body>
     </html>
   )
 }
