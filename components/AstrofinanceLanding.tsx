@@ -136,7 +136,6 @@ export default function Component() {
                     setMonth(getMonth(newMonth))
                     setYear(getYear(newMonth))
                   }}
-                  initialFocus
                   className="bg-[#1A237E] text-white rounded-md border-[#3498DB]"
                   classNames={{
                     months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
