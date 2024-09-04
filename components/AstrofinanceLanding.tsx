@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format, getYear, getMonth } from "date-fns"
 import { es } from "date-fns/locale"
-import { CalendarIcon, Facebook, Instagram, Twitter, Star, DollarSign } from "lucide-react"
+import { CalendarIcon, Facebook, Instagram, Twitter, Star, DollarSign, Loader2 } from "lucide-react"
 import { generateHoroscope } from '@/lib/generateHoroscope'
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -22,10 +22,10 @@ export default function Component() {
   const handleReveal = async () => {
     if (date) {
       setIsLoading(true);
+      setShowResults(true); // Mostrar la sección de resultados inmediatamente
       try {
         const horoscopeResult = await generateHoroscope(date);
         setHoroscope(horoscopeResult);
-        setShowResults(true);
       } catch (error) {
         console.error('Error al generar el horóscopo:', error);
         setHoroscope("Hubo un error al consultar las estrellas. Por favor, intenta de nuevo más tarde.");
@@ -161,34 +161,49 @@ export default function Component() {
               </PopoverContent>
             </Popover>
             <Button 
-              className="w-full mt-6 bg-[#2ECC71] hover:bg-[#27AE60] text-white text-lg py-3"
+              className="w-full mt-6 bg-[#2ECC71] hover:bg-[#27AE60] text-white text-lg py-3 relative"
               onClick={handleReveal}
+              disabled={isLoading || !date}
             >
-              Revelar Mi Destino Financiero
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Consultando a las estrellas...
+                </>
+              ) : (
+                "Revelar Mi Destino Financiero"
+              )}
             </Button>
           </div>
         </motion.section>
 
         <AnimatePresence>
-  {showResults && (
-    <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.5 }}
-      className="my-12 md:my-16 bg-white/10 backdrop-blur-md p-6 md:p-8 rounded-lg"
-    >
-      <h3 className="text-2xl md:text-3xl font-poppins mb-4 text-[#F1C40F]">Tu Horóscopo Financiero</h3>
-      {isLoading ? (
-        <p className="text-lg md:text-xl mb-6">Consultando a las estrellas...</p>
-      ) : (
-        <>
-          <div className="space-y-6" dangerouslySetInnerHTML={{ __html: horoscope }} />
-        </>
-      )}
-    </motion.section>
-  )}
-</AnimatePresence>
+          {showResults && (
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="my-12 md:my-16 bg-white/10 backdrop-blur-md p-6 md:p-8 rounded-lg"
+            >
+              <h3 className="text-2xl md:text-3xl font-poppins mb-4 text-[#F1C40F]">Tu Horóscopo Financiero</h3>
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <Loader2 className="h-12 w-12 animate-spin text-[#F1C40F]" />
+                  <p className="text-lg md:text-xl">Las estrellas están alineando tu destino financiero...</p>
+                </div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-6"
+                  dangerouslySetInnerHTML={{ __html: horoscope }}
+                />
+              )}
+            </motion.section>
+          )}
+        </AnimatePresence>
 
         <section className="my-12 md:my-16 bg-white/10 backdrop-blur-md p-6 md:p-8 rounded-lg">
           <h3 className="text-2xl md:text-3xl font-poppins mb-6 text-[#F1C40F]">Cómo Funciona</h3>
